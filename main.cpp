@@ -22,111 +22,105 @@ vector<string> readCodestoVector(const string& filename) {
     return codes;
 }
 
-int main() {
+list<string> readCodestoList(const string& filename) {
+    ifstream inputFile(filename);
+    list<string> codes;
+    string code;
+    while (inputFile >> code) {
+        codes.push_back(code);
+    }
+    return codes;
+}
 
-    // Start printing output
-    cout << "Operation:\tVector\tList\tSet" << endl;
+set<string> readCodestoSet(const string& filename) {
+    ifstream inputFile(filename);
+    set<string> codes;
+    string code;
+    while (inputFile >> code) {
+        codes.insert(code);
+    }
+    return codes;
+}
 
-    // Start Inputs
-    cout << "Input:\t\t";
-    // Start timing 
+vector<string> sortVector(const vector<string>& codes) {
+    vector<string> sortedCodes = codes;
+    sort(sortedCodes.begin(), sortedCodes.end());
+    return sortedCodes;
+}
+
+list<string> sortList(const list<string>& codes) {
+    list<string> sortedCodes = codes;
+    sortedCodes.sort();
+    return sortedCodes;
+}
+
+set<string> sortSet(const set<string>& codes) {
+    return codes; // Sets are always sorted
+}
+
+struct testResult {
+    double vectorReadTime;
+    double listReadTime;
+    double setReadTime;
+    double vectorSortTime;
+    double listSortTime;
+    double setSortTime;
+    double vectorDeleteTime;
+    double listDeleteTime;
+    double setDeleteTime;
+};
+
+testResult runTest(const string& filename) {
+    testResult result;
+
+    // Start timing for vector read
     auto start = chrono::steady_clock::now();
-
-    vector<string> codes = readCodestoVector("codes.txt");
-
-    // End timing
+    vector<string> codes = readCodestoVector(filename);
     auto end = chrono::steady_clock::now();
+    result.vectorReadTime = chrono::duration<double, milli>(end - start).count();
 
-    // Calculate duration
-    auto duration = chrono::duration<double, milli>(end - start);
-    cout << fixed << setprecision(3);
-    cout << duration.count() << "\t";
-
-    // Input into list
-    ifstream inputFileList("codes.txt");
-    if (!inputFileList) {
-        cerr << "Error opening file." << endl;
-        return 1;
-    }
-
-    // Start timing
+    // Start timing for list read
     start = chrono::steady_clock::now();
-
-    list<string> codeList;
-    while (inputFileList >> code) {
-        codeList.push_back(code);
-    }
-
-    // End timing
+    list<string> codeList = readCodestoList(filename);
     end = chrono::steady_clock::now();
+    result.listReadTime = chrono::duration<double, milli>(end - start).count();
 
-    // Calculate duration
-    duration = chrono::duration<double, milli>(end - start);
-    cout << duration.count() << "\t";
-
-    inputFileList.close();
-
-    // Input into set
-    ifstream inputFileSet("codes.txt");
-    if (!inputFileSet) {
-        cerr << "Error opening file." << endl;
-        return 1;
-    }
-
-    // Start timing
+    // Start timing for set read
     start = chrono::steady_clock::now();
-
-    set<string> codeSet;
-    while (inputFileSet >> code) {
-        codeSet.insert(code);
-    }
-
-    // End timing
+    set<string> codeSet = readCodestoSet(filename);
     end = chrono::steady_clock::now();
+    result.setReadTime = chrono::duration<double, milli>(end - start).count();
 
-    // Calculate duration
-    duration = chrono::duration<double, milli>(end - start);
-    cout << duration.count() << endl;
-
-    inputFileSet.close();
-
-    // Now for sorting
-    cout << "Sorting:\t";
-
-    // vector sort
+    // Start timing for vector sort
     start = chrono::steady_clock::now();
     sort(codes.begin(), codes.end());
     end = chrono::steady_clock::now();
-    cout << chrono::duration<double, milli>(end - start).count() << "\t";
+    result.vectorSortTime = chrono::duration<double, milli>(end - start).count();
 
-    // list sort
+    // Start timing for list sort
     start = chrono::steady_clock::now();
     codeList.sort();
     end = chrono::steady_clock::now();
-    cout << chrono::duration<double, milli>(end - start).count() << "\t";
+    result.listSortTime = chrono::duration<double, milli>(end - start).count();
 
-    // set sort (not needed, as set is always sorted)
-    cout << "-1" << endl;
-
-    // Inserting
-    cout << "Inserting:\t";
-    // vector insert
+    // Start timing for set sort
     start = chrono::steady_clock::now();
-    codes.insert(codes.begin() + codes.size() / 2, "TESTCODE");
+    codeSet = sortSet(codeSet);
     end = chrono::steady_clock::now();
-    cout << chrono::duration<double, milli>(end - start).count() << "\t";
+    result.setSortTime = chrono::duration<double, milli>(end - start).count();
 
-    // list insert
-    start = chrono::steady_clock::now();
-    codeList.insert(next(codeList.begin(), codeList.size() / 2), "TESTCODE");
-    end = chrono::steady_clock::now();
-    cout << chrono::duration<double, milli>(end - start).count() << "\t";
+    return result;
+}
 
-    // set insert
-    start = chrono::steady_clock::now();
-    codeSet.insert("TESTCODE");
-    end = chrono::steady_clock::now();
-    cout << chrono::duration<double, milli>(end - start).count() << endl;
+int main() {
+    int numTests = 2;
+    vector<testResult> results(numTests);
+    for(int i = 0; i < numTests; ++i) {
+        results[i] = runTest("codes.txt");
+    }
+    // Start printing output
+    cout << "Operation:\tVector\tList\tSet" << endl;
+
 
 
     // Deleting
