@@ -11,13 +11,19 @@
 
 using namespace std;
 
+// Function to read codes from a file into a vector
+vector<string> readCodestoVector(const string& filename) {
+    ifstream inputFile(filename);
+    vector<string> codes;
+    string code;
+    while (inputFile >> code) {
+        codes.push_back(code);
+    }
+    return codes;
+}
 
 int main() {
-    ifstream inputFile("codes.txt");
-    if (!inputFile) {
-        cerr << "Error opening file." << endl;
-        return 1;
-    }
+
     // Start printing output
     cout << "Operation:\tVector\tList\tSet" << endl;
 
@@ -26,11 +32,7 @@ int main() {
     // Start timing 
     auto start = chrono::steady_clock::now();
 
-    vector<string> codes;
-    string code;
-    while (inputFile >> code) {
-        codes.push_back(code);
-    }
+    vector<string> codes = readCodestoVector("codes.txt");
 
     // End timing
     auto end = chrono::steady_clock::now();
@@ -39,8 +41,6 @@ int main() {
     auto duration = chrono::duration<double, milli>(end - start);
     cout << fixed << setprecision(3);
     cout << duration.count() << "\t";
-
-    inputFile.close();
 
     // Input into list
     ifstream inputFileList("codes.txt");
