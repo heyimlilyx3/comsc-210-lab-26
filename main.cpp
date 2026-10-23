@@ -18,7 +18,7 @@ int main() {
         cerr << "Error opening file." << endl;
         return 1;
     }
-    // Start timing
+    // Start timing 
     auto start = chrono::steady_clock::now();
 
     vector<string> codes;
