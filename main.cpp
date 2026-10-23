@@ -18,6 +18,11 @@ int main() {
         cerr << "Error opening file." << endl;
         return 1;
     }
+    // Start printing output
+    cout << "Operation:\tVector\tList\tSet" << endl;
+
+    // Start Inputs
+    cout << "Input:\t\t";
     // Start timing 
     auto start = chrono::steady_clock::now();
 
@@ -33,7 +38,7 @@ int main() {
     // Calculate duration
     auto duration = chrono::duration<double, milli>(end - start);
     cout << fixed << setprecision(3);
-    cout << "vector input time: " << duration.count() << " milliseconds" << endl;
+    cout << duration.count() << "\t";
 
     inputFile.close();
 
@@ -57,7 +62,7 @@ int main() {
 
     // Calculate duration
     duration = chrono::duration<double, milli>(end - start);
-    cout << "list input time: " << duration.count() << " milliseconds" << endl;
+    cout << duration.count() << "\t";
 
     inputFileList.close();
 
@@ -81,70 +86,68 @@ int main() {
 
     // Calculate duration
     duration = chrono::duration<double, milli>(end - start);
-    cout << "set input time: " << duration.count() << " milliseconds" << endl;
+    cout << duration.count() << endl;
 
     inputFileSet.close();
 
     // Now for sorting
-    cout << endl;
+    cout << "Sorting:\t";
 
     // vector sort
     start = chrono::steady_clock::now();
     sort(codes.begin(), codes.end());
     end = chrono::steady_clock::now();
-    cout << "vector sort time: " << chrono::duration<double, milli>(end - start).count() << " milliseconds" << endl;
+    cout << chrono::duration<double, milli>(end - start).count() << "\t";
 
     // list sort
     start = chrono::steady_clock::now();
     codeList.sort();
     end = chrono::steady_clock::now();
-    cout << "list sort time: " << chrono::duration<double, milli>(end - start).count() << " milliseconds" << endl;
+    cout << chrono::duration<double, milli>(end - start).count() << "\t";
 
     // set sort (not needed, as set is always sorted)
-    cout << "set sort time: -1 milliseconds (set is always sorted)" << endl;
-
-    cout << endl;
+    cout << "-1" << endl;
 
     // Inserting
-
+    cout << "Inserting:\t";
     // vector insert
     start = chrono::steady_clock::now();
     codes.insert(codes.begin() + codes.size() / 2, "TESTCODE");
     end = chrono::steady_clock::now();
-    cout << "vector insert time: " << chrono::duration<double, milli>(end - start).count() << " milliseconds" << endl;
+    cout << chrono::duration<double, milli>(end - start).count() << "\t";
 
     // list insert
     start = chrono::steady_clock::now();
     codeList.insert(next(codeList.begin(), codeList.size() / 2), "TESTCODE");
     end = chrono::steady_clock::now();
-    cout << "list insert time: " << chrono::duration<double, milli>(end - start).count() << " milliseconds" << endl;
+    cout << chrono::duration<double, milli>(end - start).count() << "\t";
 
     // set insert
     start = chrono::steady_clock::now();
     codeSet.insert("TESTCODE");
     end = chrono::steady_clock::now();
-    cout << "set insert time: " << chrono::duration<double, milli>(end - start).count() << " milliseconds" << endl;
+    cout << chrono::duration<double, milli>(end - start).count() << endl;
 
-    cout << endl;
+
     // Deleting
-
+    cout << "Deleting:\t";
     // delete middle element from vector
     start = chrono::steady_clock::now();
     codes.erase(codes.begin() + codes.size() / 2);
     end = chrono::steady_clock::now();
-    cout << "vector delete time: " << chrono::duration<double, milli>(end - start).count() << " milliseconds" << endl;
+    cout << chrono::duration<double, milli>(end - start).count() << " \t";
 
     // delete middle element from list
     start = chrono::steady_clock::now();
     codeList.erase(next(codeList.begin(), codeList.size() / 2));
     end = chrono::steady_clock::now();
-    cout << "list delete time: " << chrono::duration<double, milli>(end - start).count() << " milliseconds" << endl;
+    cout << chrono::duration<double, milli>(end - start).count() << " \t";
 
     // delete element from set
     start = chrono::steady_clock::now();
     codeSet.erase("TESTCODE");
     end = chrono::steady_clock::now();
-    cout << "set delete time: " << chrono::duration<double, milli>(end - start).count() << " milliseconds" << endl;
+    cout << chrono::duration<double, milli>(end - start).count() << endl;
     return 0;
 }
 
