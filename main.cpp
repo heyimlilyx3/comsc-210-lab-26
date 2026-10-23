@@ -109,39 +109,67 @@ testResult runTest(const string& filename) {
     end = chrono::steady_clock::now();
     result.setSortTime = chrono::duration<double, milli>(end - start).count();
 
+    // Start timing for vector delete
+    start = chrono::steady_clock::now();
+    codes.erase(codes.begin() + codes.size() / 2);
+    end = chrono::steady_clock::now();
+    result.vectorDeleteTime = chrono::duration<double, milli>(end - start).count();
+
+    // Start timing for list delete
+    start = chrono::steady_clock::now();
+    codeList.erase(next(codeList.begin(), codeList.size() / 2));
+    end = chrono::steady_clock::now();
+    result.listDeleteTime = chrono::duration<double, milli>(end - start).count();
+
+    // Start timing for set delete
+    start = chrono::steady_clock::now();
+    codeSet.erase("TESTCODE");
+    end = chrono::steady_clock::now();
+    result.setDeleteTime = chrono::duration<double, milli>(end - start).count();
+
     return result;
 }
 
+testResult averageResults(const vector<testResult>& results) {
+    testResult avgResult = {};
+    for (const auto& result : results) {
+        avgResult.vectorReadTime += result.vectorReadTime;
+        avgResult.listReadTime += result.listReadTime;
+        avgResult.setReadTime += result.setReadTime;
+        avgResult.vectorSortTime += result.vectorSortTime;
+        avgResult.listSortTime += result.listSortTime;
+        avgResult.setSortTime += result.setSortTime;
+        avgResult.vectorDeleteTime += result.vectorDeleteTime;
+        avgResult.listDeleteTime += result.listDeleteTime;
+        avgResult.setDeleteTime += result.setDeleteTime;
+    }
+    int numTests = results.size();
+    avgResult.vectorReadTime /= numTests;
+    avgResult.listReadTime /= numTests;
+    avgResult.setReadTime /= numTests;
+    avgResult.vectorSortTime /= numTests;
+    avgResult.listSortTime /= numTests;
+    avgResult.setSortTime /= numTests;
+    avgResult.vectorDeleteTime /= numTests;
+    avgResult.listDeleteTime /= numTests;
+    avgResult.setDeleteTime /= numTests;
+
+    return avgResult;
+}
+
 int main() {
-    int numTests = 2;
+    int numTests = 15;
     vector<testResult> results(numTests);
     for(int i = 0; i < numTests; ++i) {
         results[i] = runTest("codes.txt");
     }
     // Start printing output
+    cout << "Number of simulations: " << numTests << endl;
     cout << "Operation:\tVector\tList\tSet" << endl;
 
+    testResult avgResult = averageResults(results);
+    cout << "Average:\t" << avgResult.vectorReadTime << "\t" << avgResult.listReadTime << "\t" << avgResult.setReadTime << endl;
 
-
-    // Deleting
-    cout << "Deleting:\t";
-    // delete middle element from vector
-    start = chrono::steady_clock::now();
-    codes.erase(codes.begin() + codes.size() / 2);
-    end = chrono::steady_clock::now();
-    cout << chrono::duration<double, milli>(end - start).count() << " \t";
-
-    // delete middle element from list
-    start = chrono::steady_clock::now();
-    codeList.erase(next(codeList.begin(), codeList.size() / 2));
-    end = chrono::steady_clock::now();
-    cout << chrono::duration<double, milli>(end - start).count() << " \t";
-
-    // delete element from set
-    start = chrono::steady_clock::now();
-    codeSet.erase("TESTCODE");
-    end = chrono::steady_clock::now();
-    cout << chrono::duration<double, milli>(end - start).count() << endl;
     return 0;
 }
 
